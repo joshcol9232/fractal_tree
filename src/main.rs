@@ -37,8 +37,8 @@ impl MainState {
         let config = Config::from(&Self::load_config_file().unwrap()[0]);
 
         let base_tree_pos = (
-            Vector2::new(SCREEN_DIMS.0/2.0, SCREEN_DIMS.1 - SCREEN_DIMS.1/10.0),
-            Vector2::new(SCREEN_DIMS.0/2.0, SCREEN_DIMS.1 - (SCREEN_DIMS.1/10.0 + SCREEN_DIMS.1/3.0)),
+            Vector2::new(SCREEN_DIMS.0/2.0, SCREEN_DIMS.1 - SCREEN_DIMS.1/6.0),
+            Vector2::new(SCREEN_DIMS.0/2.0, SCREEN_DIMS.1 - SCREEN_DIMS.1/2.0),
         );
 
         let mut s = MainState {
@@ -136,6 +136,7 @@ pub fn main() -> GameResult {
         .window_setup(
             WindowSetup::default()
                 .samples(NumSamples::Four)
+                .title("Tree")
         );
 
     let (ctx, event_loop) = &mut cb.build()?;
