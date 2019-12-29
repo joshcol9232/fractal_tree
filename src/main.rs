@@ -42,7 +42,7 @@ impl MainState {
         );
 
         let mut s = MainState {
-            tree: Tree::new(base_tree_pos.0, base_tree_pos.1),
+            tree: Tree::new(base_tree_pos.0, base_tree_pos.1, 0),
             angle: config.start_angle,
             angular_velocity: config.angular_velocity,
             iters: config.iterations,
@@ -81,7 +81,7 @@ impl MainState {
     }
 
     fn gen_tree(&mut self) {
-        self.tree = Tree::new(self.base_tree_pos.0, self.base_tree_pos.1);
+        self.tree = Tree::new(self.base_tree_pos.0, self.base_tree_pos.1, 0);
         for _ in 0..self.iters {
             self.tree.generate_new_sub_trees(self.branches_per_iter, self.angle, self.length_multiplier);
         }
@@ -103,7 +103,7 @@ impl event::EventHandler for MainState {
         graphics::clear(ctx, [0.1, 0.2, 0.3, 1.0].into());
 
         let mut mesh_builder = MeshBuilder::new();
-        self.tree.draw(&mut mesh_builder, self.line_thickness)?;         // Generate mesh in mesh_builder
+        self.tree.draw(&mut mesh_builder, self.line_thickness, self.iters)?;         // Generate mesh in mesh_builder
 
         let mesh = mesh_builder.build(ctx)?;
         graphics::draw(ctx, &mesh, DrawParam::default())?;

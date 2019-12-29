@@ -8,28 +8,32 @@ pub struct Tree {
     pub sub_trees: Vec<Tree>,
     start: Vector2<f32>,
     end: Vector2<f32>,
+    generation: usize,          // The generation the tree belongs to. Starts at 0
 }
 
 impl Tree {
-    pub fn new(start: Vector2<f32>, end: Vector2<f32>) -> Self {
+    pub fn new(start: Vector2<f32>, end: Vector2<f32>, generation: usize) -> Self {
         Self {
             sub_trees: vec![],
             start,
             end,
+            generation,
         }
     }
 
-    pub fn draw(&self, mesh_builder: &mut MeshBuilder, line_thickness: f32) -> GameResult {
-        if self.has_sub_trees() {
-            for sub_tree in self.sub_trees.iter() {
-                sub_tree.draw(mesh_builder, line_thickness)?;
-            }
-        }
+    pub fn draw(&self, mesh_builder: &mut MeshBuilder, line_thickness: f32, max_generation: usize) -> GameResult {
+        let col_ratio = (0.5 + self.generation as f32/max_generation as f32)/1.5;
         mesh_builder.line(
             &[Point2::new(self.start.x, self.start.y), Point2::new(self.end.x, self.end.y)],
             line_thickness,
-            [0.9, 0.9, 0.9, 1.0].into()
+            [col_ratio, col_ratio, col_ratio, 1.0].into()
         )?;
+
+        if self.has_sub_trees() {
+            for sub_tree in self.sub_trees.iter() {
+                sub_tree.draw(mesh_builder, line_thickness, max_generation)?;
+            }
+        }
 
         Ok(())
     }
@@ -53,7 +57,7 @@ impl Tree {
 
             for _ in 0..n {
                 let branch_end = tools::vec_from_angle_and_mag(my_angle + branch_angle, new_magnitude) + self.end;
-                self.sub_trees.push(Tree::new(self.end, branch_end));
+                self.sub_trees.push(Tree::new(self.end, branch_end, self.generation + 1));
 
                 branch_angle += branch_angle_interval;
             }
