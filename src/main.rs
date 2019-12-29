@@ -28,6 +28,7 @@ struct MainState {
     iters: usize,
     branches_per_iter: usize,
     base_tree_pos: (Vector2<f32>, Vector2<f32>),
+    length_multiplier: f32,
     line_thickness: f32,
 }
 
@@ -47,6 +48,7 @@ impl MainState {
             iters: config.iterations,
             branches_per_iter: config.branches_per_iteration,
             base_tree_pos,
+            length_multiplier: config.length_multiplier,
             line_thickness: config.line_thickness,
         };
 
@@ -74,13 +76,14 @@ impl MainState {
         self.angular_velocity = config.angular_velocity;
         self.iters = config.iterations;
         self.branches_per_iter = config.branches_per_iteration;
+        self.length_multiplier = config.length_multiplier;
         self.line_thickness = config.line_thickness;
     }
 
     fn gen_tree(&mut self) {
         self.tree = Tree::new(self.base_tree_pos.0, self.base_tree_pos.1);
         for _ in 0..self.iters {
-            self.tree.generate_new_sub_trees(self.branches_per_iter, self.angle);
+            self.tree.generate_new_sub_trees(self.branches_per_iter, self.angle, self.length_multiplier);
         }
     }
 }

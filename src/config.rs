@@ -5,6 +5,7 @@ pub struct Config {
     pub angular_velocity: f32,
     pub iterations: usize,
     pub branches_per_iteration: usize,
+    pub length_multiplier: f32,
     pub line_thickness: f32,
 }
 
@@ -19,6 +20,8 @@ impl From<&Yaml> for Config {
                 .expect("Could not parse iterations as an integer.") as usize,
             branches_per_iteration: conf["branches_per_iteration"].as_i64()
                 .expect("Could not parse branches_per_iteration as an integer.") as usize,
+            length_multiplier: conf["length_multiplier"].as_f64()
+                .expect("Could not parse length_multiplier as a float.") as f32,
             line_thickness: conf["line_thickness"].as_f64()
                 .expect("Could not parse line_thickness as a float.") as f32,
         }
