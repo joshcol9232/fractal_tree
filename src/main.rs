@@ -100,7 +100,7 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, [0.1, 0.2, 0.3, 1.0].into());
+        graphics::clear(ctx, [0.05, 0.1, 0.1, 1.0].into());
 
         let mut mesh_builder = MeshBuilder::new();
         self.tree.draw(&mut mesh_builder, self.line_thickness, self.iters)?;         // Generate mesh in mesh_builder
