@@ -1,0 +1,9 @@
+[package]
+name = "fractal_tree"
+version = "0.1.0"
+authors = ["eggmund <joshuacolclough2@googlemail.com>"]
+edition = "2018"
+
+[dependencies]
+ggez = "0.5.1"
+yaml-rust = "0.4.3"

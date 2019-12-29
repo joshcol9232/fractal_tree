@@ -1,0 +1,9 @@
+# Nice Angles and Branches:
+#   2.094395, 3
+#   1.884955592, 3
+
+start_angle: 0.2      # In radians
+angular_velocity: 0.1         # Rate of change of angle (radians/second)
+iterations: 14                # Depth of tree (computational power required increases exponentially so be careful)
+branches_per_iteration: 2     # How many branches branch off of a single branch.
+line_thickness: 1.0           # How thick the lines are drawn.
