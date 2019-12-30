@@ -4,7 +4,7 @@ mod config;
 
 use ggez::{Context, GameResult, ContextBuilder};
 use ggez::event::{self, KeyCode, KeyMods};
-use ggez::graphics::{self, MeshBuilder, DrawParam, Text};
+use ggez::graphics::{self, MeshBuilder, Mesh, DrawParam, Text};
 use ggez::nalgebra::Vector2;
 use ggez::timer;
 
@@ -30,6 +30,8 @@ struct MainState {
     base_tree_pos: (Vector2<f32>, Vector2<f32>),
     length_multiplier: f32,
     line_thickness: f32,
+
+    tree_mesh: Option<Mesh>,
 }
 
 impl MainState {
@@ -50,6 +52,8 @@ impl MainState {
             base_tree_pos,
             length_multiplier: config.length_multiplier,
             line_thickness: config.line_thickness,
+
+            tree_mesh: None,
         };
 
         s.gen_tree();
@@ -102,15 +106,19 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.05, 0.1, 0.1, 1.0].into());
 
-        let mut mesh_builder = MeshBuilder::new();
-        self.tree.draw(&mut mesh_builder, self.line_thickness, self.iters)?;         // Generate mesh in mesh_builder
+        if self.tree_mesh.is_none() || self.angular_velocity != 0.0 {     // If mesh needs to be regenerated
+            let mut mesh_builder = MeshBuilder::new();
+            self.tree.draw(&mut mesh_builder, self.line_thickness, self.iters)?;         // Generate mesh in mesh_builder
 
-        let mesh = mesh_builder.build(ctx)?;
-        graphics::draw(ctx, &mesh, DrawParam::default())?;
+            self.tree_mesh = Some(mesh_builder.build(ctx)?);
+        }
+
+        if let Some(mesh) = self.tree_mesh.as_ref() {
+            graphics::draw(ctx, mesh, DrawParam::default())?;
+        }
 
         // Draw info
-        let abs_angle = self.angle.abs() % TWO_PI;
-        let info_text = Text::new(format!("Angle: {:.3}\nRads: {:.3}", abs_angle * RAD_TO_DEG, abs_angle));
+        let info_text = Text::new(format!("Angle: {:.3}\nRads: {:.3}", self.angle * RAD_TO_DEG, self.angle));
         graphics::draw(ctx, &info_text, DrawParam::default().dest([10.0, 10.0]))?;
 
         graphics::present(ctx)?;

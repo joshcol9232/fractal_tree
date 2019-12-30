@@ -5,7 +5,7 @@ angular_velocity: 0.2         # Rate of change of angle (radians/second)
 iterations: 12               # Depth of tree (computational power required increases exponentially so be careful)
 branches_per_iteration: 2     # How many branches branch off of a single branch.
 length_multiplier: 0.6        # What the size of the branches is multiplied by at every junction. (Should be < 1)
-line_thickness: 1.0           # How thick the lines are drawn.
+line_thickness: 0.5           # How thick the lines are drawn.
 
 # PRESETS:
 
@@ -19,10 +19,18 @@ line_thickness: 1.0           # How thick the lines are drawn.
 
 # Lots of complex patterns moving in and out, kind of looks like snowflakes. (EPILEPSY WARNING)
 # start_angle: 0.2
-# angular_velocity: 0.5
+# angular_velocity: 0.3
 # iterations: 4
 # branches_per_iteration: 15
 # length_multiplier: 0.6
+# line_thickness: 0.2
+
+# Wheel of arms that count down to 2 and back up (quite small though)
+# start_angle: 0.2
+# angular_velocity: 0.3
+# iterations: 4
+# branches_per_iteration: 15
+# length_multiplier: 0.3
 # line_thickness: 0.2
 
 # Looks kind of like Serpinski triangle.
@@ -36,7 +44,7 @@ line_thickness: 1.0           # How thick the lines are drawn.
 # Another nice triangle fractal.
 # start_angle: 1.884955592
 # angular_velocity: 0.0
-# iterations: 9
+# iterations: 13
 # branches_per_iteration: 3
 # length_multiplier: 0.6
-# line_thickness: 1.0
+# line_thickness: 0.2
