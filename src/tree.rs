@@ -5,19 +5,25 @@ use ggez::graphics::MeshBuilder;
 use crate::tools;
 
 pub struct Tree {
-    pub sub_trees: Vec<Tree>,
+    sub_trees: Vec<Tree>,
     start: Vector2<f32>,
     end: Vector2<f32>,
     generation: usize,          // The generation the tree belongs to. Starts at 0
+
+    angle: f32,         // Doesn't need to be updated since tree gets deleted if the angle changes.
+    magnitude: f32,     // ^
 }
 
 impl Tree {
     pub fn new(start: Vector2<f32>, end: Vector2<f32>, generation: usize) -> Self {
+        let (angle, magnitude) = tools::get_angle_and_magnitude(&start, &end);
         Self {
             sub_trees: vec![],
             start,
             end,
             generation,
+            angle,
+            magnitude,
         }
     }
 
@@ -43,20 +49,16 @@ impl Tree {
         !self.sub_trees.is_empty()
     }
 
-    pub fn generate_new_sub_trees(&mut self, n: usize, angle: f32, length_multiplier: f32) {
+    pub fn generate_new_sub_trees(&mut self, n: usize, angle: f32, branch_angle_interval: f32, length_multiplier: f32) {
         if self.has_sub_trees() {   // Traverse down tree
             for sub_tree in self.sub_trees.iter_mut() {
-                sub_tree.generate_new_sub_trees(n, angle, length_multiplier);         // Recursively call function for each sub tree
+                sub_tree.generate_new_sub_trees(n, angle, branch_angle_interval, length_multiplier);         // Recursively call function for each sub tree
             }
         } else {    // At end of branches now, so generate new branch coming off this one
-            let (my_angle, my_magnitude) = tools::get_angle_and_magnitude(&self.start, &self.end);
-            let new_magnitude = my_magnitude * length_multiplier;
-
             let mut branch_angle = -angle;
-            let branch_angle_interval = (angle * 2.0)/(n - 1) as f32;
 
             for _ in 0..n {
-                let branch_end = tools::vec_from_angle_and_mag(my_angle + branch_angle, new_magnitude) + self.end;
+                let branch_end = tools::vec_from_angle_and_mag(self.angle + branch_angle, self.magnitude * length_multiplier) + self.end;
                 self.sub_trees.push(Tree::new(self.end, branch_end, self.generation + 1));
 
                 branch_angle += branch_angle_interval;

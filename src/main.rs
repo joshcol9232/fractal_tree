@@ -19,7 +19,6 @@ use crate::config::Config;
 const CONFIG_FILE_LOCATION: &str = "./config.yaml";
 const SCREEN_DIMS: (f32, f32) = (1000.0, 800.0);
 const RAD_TO_DEG: f32 = 180.0/PI;
-const TWO_PI: f32 = PI * 2.0;
 
 struct MainState {
     tree: Tree,
@@ -85,9 +84,10 @@ impl MainState {
     }
 
     fn gen_tree(&mut self) {
+        let branch_angle_interval = (self.angle * 2.0)/(self.branches_per_iter - 1) as f32;
         self.tree = Tree::new(self.base_tree_pos.0, self.base_tree_pos.1, 0);
         for _ in 0..self.iters {
-            self.tree.generate_new_sub_trees(self.branches_per_iter, self.angle, self.length_multiplier);
+            self.tree.generate_new_sub_trees(self.branches_per_iter, self.angle, branch_angle_interval, self.length_multiplier);
         }
     }
 }
