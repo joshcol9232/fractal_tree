@@ -1,4 +1,4 @@
-use ggez::nalgebra::{Vector2};
+use nalgebra::{Vector2};
 
 #[inline]
 pub fn get_angle_and_magnitude(p1: &Vector2<f32>, p2: &Vector2<f32>) -> (f32, f32) {

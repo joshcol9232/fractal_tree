@@ -1,4 +1,4 @@
-use ggez::nalgebra::{Vector2, Point2};
+use nalgebra::{Vector2, Point2};
 use ggez::GameResult;
 use ggez::graphics::MeshBuilder;
 
@@ -30,7 +30,8 @@ impl Tree {
     pub fn draw(&self, mesh_builder: &mut MeshBuilder, line_thickness: f32, max_generation: usize) -> GameResult {
         let col_ratio = (0.5 + self.generation as f32/max_generation as f32)/1.5;
         mesh_builder.line(
-            &[Point2::new(self.start.x, self.start.y), Point2::new(self.end.x, self.end.y)],
+            &[[self.start.x, self.start.y],
+                      [self.end.x, self.end.y]],
             line_thickness,
             [col_ratio, col_ratio, col_ratio, 1.0].into()
         )?;

@@ -1,8 +1,8 @@
 # OWN SETTINGS:
 
-start_angle: 0.2      # In radians
+start_angle: 0.2              # In radians
 angular_velocity: 0.2         # Rate of change of angle (radians/second)
-iterations: 9               # Depth of tree (computational power required increases exponentially so be careful)
+iterations: 9                 # Depth of tree (computational power required increases exponentially so be careful)
 branches_per_iteration: 3     # How many branches branch off of a single branch.
 length_multiplier: 0.6        # What the size of the branches is multiplied by at every junction. (Should be < 1)
 line_thickness: 1.0           # How thick the lines are drawn.

@@ -3,10 +3,10 @@ mod tree;
 mod config;
 
 use ggez::{Context, GameResult, ContextBuilder};
-use ggez::event::{self, KeyCode, KeyMods};
+use ggez::event;
+use ggez::input::keyboard::{KeyCode, KeyMods, KeyInput};
 use ggez::graphics::{self, MeshBuilder, Mesh, DrawParam, Text};
-use ggez::nalgebra::Vector2;
-use ggez::timer;
+use nalgebra::Vector2;
 
 use yaml_rust::Yaml;
 
@@ -94,7 +94,7 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
-        let dt = timer::duration_to_f64(timer::average_delta(ctx)) as f32;
+        let dt = ctx.time.delta().as_secs_f32();
 
         self.angle += self.angular_velocity * dt;
 
@@ -104,32 +104,33 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, [0.05, 0.1, 0.1, 1.0].into());
+        let mut canvas = graphics::Canvas::from_frame(ctx, Some([0.05, 0.1, 0.1, 1.0].into()));
 
         if self.tree_mesh.is_none() || self.angular_velocity != 0.0 {     // If mesh needs to be regenerated
             let mut mesh_builder = MeshBuilder::new();
             self.tree.draw(&mut mesh_builder, self.line_thickness, self.iters)?;         // Generate mesh in mesh_builder
 
-            self.tree_mesh = Some(mesh_builder.build(ctx)?);
+            self.tree_mesh = Some(Mesh::from_data(ctx, mesh_builder.build()));
         }
 
         if let Some(mesh) = self.tree_mesh.as_ref() {
-            graphics::draw(ctx, mesh, DrawParam::default())?;
+            canvas.draw(mesh, DrawParam::default());
         }
 
         // Draw info
         let info_text = Text::new(format!("Angle: {:.3}\nRads: {:.3}", self.angle * RAD_TO_DEG, self.angle));
-        graphics::draw(ctx, &info_text, DrawParam::default().dest([10.0, 10.0]))?;
+        canvas.draw(&info_text, DrawParam::default().dest([10.0, 10.0]));
 
-        graphics::present(ctx)?;
+        canvas.finish(ctx);
         Ok(())
     }
 
-    fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymod: KeyMods, _repeat: bool) {
-        match keycode {
-            KeyCode::R => self.reload_config(),
+    fn key_down_event(&mut self, _ctx: &mut Context, input: KeyInput, _repeat: bool) -> GameResult {
+        match input.keycode {
+            Some(KeyCode::R) => self.reload_config(),
             _ => ()
         }
+        Ok(())
     }
 }
 
@@ -147,7 +148,7 @@ pub fn main() -> GameResult {
                 .title("Tree")
         );
 
-    let (ctx, event_loop) = &mut cb.build()?;
-    let state = &mut MainState::new()?;
+    let (ctx, event_loop) = cb.build()?;
+    let mut state = MainState::new()?;
     event::run(ctx, event_loop, state)
 }
